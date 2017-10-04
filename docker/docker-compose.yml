@@ -1,10 +1,11 @@
 clouddriver:
   container_name: clouddriver
   env_file: ./compose.env
+  net: ${CUSTOM_NETWORK_NAME}
   environment:
     - AWS_ACCESS_KEY_ID
     - AWS_SECRET_ACCESS_KEY
-    - "SERVICES_FRONT50_BASEURL=http://$DOCKER_IP:8080"
+    - "SERVICES_FRONT50_BASEURL=http://${DOCKER_IP}:8080"
   image: quay.io/spinnaker/clouddriver:master
   links:
     - redis
@@ -12,28 +13,31 @@ clouddriver:
     - "7002:7002"
 deck:
   container_name: deck
+  net: ${CUSTOM_NETWORK_NAME}
   environment:
-    - "API_HOST=http://$DOCKER_IP:8084"
+    - "API_HOST=http://${DOCKER_IP}:8084"
     - DECK_HOST=0.0.0.0
     - DECK_PORT=9000
     - PROTOCOL=http
     - AUTH_ENABLED=false
-    - "AUTH_ENDPOINT=http://$DOCKER_IP:8084/auth/user"
+    - "AUTH_ENDPOINT=http://${DOCKER_IP}:8084/auth/user"
   image: quay.io/spinnaker/deck:master
   ports:
     - "9000:9000"
 echo:
   container_name: echo
+  net: ${CUSTOM_NETWORK_NAME}
   env_file: ./compose.env
   environment:
-    - "FRONT50_BASEURL=http://$DOCKER_IP:8080"
-    - "ORCA_BASEURL=http://$DOCKER_IP:8083"
+    - "FRONT50_BASEURL=http://${DOCKER_IP}:8080"
+    - "ORCA_BASEURL=http://${DOCKER_IP}:8083"
     - "JAVA_OPTS=-javaagent:/opt/echo/lib/jamm-0.2.5.jar"
   image: quay.io/spinnaker/echo:master
   ports:
     - "8089:8089"
 front50:
   container_name: front50
+  net: ${CUSTOM_NETWORK_NAME}
   env_file: ./compose.env
   environment:
     - "JAVA_OPTS=-javaagent:/opt/front50/lib/jamm-0.2.5.jar"
@@ -42,6 +46,7 @@ front50:
     - "8080:8080"
 gate:
   container_name: gate
+  net: ${CUSTOM_NETWORK_NAME}
   env_file: ./compose.env
 #  environment:
 #    - SERVICES_CLOUDDRIVER_HOST=clouddriver
@@ -63,6 +68,7 @@ gate:
     - "8084:8084"
 igor:
   container_name: igor
+  net: ${CUSTOM_NETWORK_NAME}
   env_file: ./compose.env
   environment:
     - SERVICES_ECHO_HOST=echo
@@ -76,6 +82,7 @@ igor:
     - "8088:8088"
 orca:
   container_name: orca
+  net: ${CUSTOM_NETWORK_NAME}
   env_file: ./compose.env
   environment:
     - SERVICES_CLOUDDRIVER_HOST=clouddriver
@@ -96,11 +103,13 @@ orca:
 redis:
   command: "redis-server --appendonly yes"
   container_name: redis
+  net: ${CUSTOM_NETWORK_NAME}
   expose:
     - "6379"
   image: redis
 rosco:
   container_name: rosco
+  net: ${CUSTOM_NETWORK_NAME}
   env_file: ./compose.env
   image: quay.io/spinnaker/rosco:master
   links:
@@ -109,6 +118,7 @@ rosco:
     - "8087:8087"
 fiat:
   container_name: fiat
+  net: ${CUSTOM_NETWORK_NAME}
   env_file: ./compose.env
   environment:
     - SERVICES_CLOUDDRIVER_BASEURL=clouddriver

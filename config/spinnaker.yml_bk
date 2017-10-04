@@ -18,13 +18,11 @@ services:
     # (clouddriver, gate, etc) at once, but not external systems (jenkins, etc).
     # Individual systems can still be overridden using their own section entry
     # directly under 'services'.
-    host: 54.154.76.131 
-    gate: gate
-    cloudriver: clouddriver
+    host: localhost
     protocol: http
 
   clouddriver:
-    host: ${services.default.clouddriver}
+    host: ${services.default.host}
     port: 7002
     baseUrl: ${services.default.protocol}://${services.clouddriver.host}:${services.clouddriver.port}
     aws:
