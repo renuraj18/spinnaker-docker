@@ -1,0 +1,4 @@
+ldap:
+  enabled: true
+  url: ldap://${LDAP_SERVER}/${LDAP_FULL_DOMAIN}
+  userDnPattern: cn={0},ou=people
