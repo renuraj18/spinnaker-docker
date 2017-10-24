@@ -1,0 +1,46 @@
+---
+version: "3"
+services:
+  redis:
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    command: "redis-server --appendonly yes"
+    image: "redis"
+    networks:
+      - my-network
+    ports:
+      - "6379"
+  deck:
+    env_file: ./compose.env
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    image: quay.io/spinnaker/deck:master
+    networks:
+      - my-network
+    ports:
+      - "9000:9000"
+#    volumes:
+#      - "/root/spinnaker-docker/config:/opt/spinnaker/config"
+  gate:
+    env_file: ./compose.env
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    image: quay.io/spinnaker/gate:master
+    networks:
+      - my-network
+    ports:
+      - "8084:8084"
+    volumes:
+      - "/root/spinnaker-docker/config:/opt/spinnaker/config"
+      
+networks:
+  my-network:
+    driver: overlay
+    external: true
+    
